@@ -8,23 +8,37 @@ public class SuperDialogue : MonoBehaviour {
     [Tooltip("对话的类型")]
     public DialogueType dialogueType;
     [Space(15)]
+    [Tooltip("主角是谁")]
+    public Transform player;
+    [Space(15)]
     [Tooltip("调整对话框的位置")]
     public Vector3 DialogueCaseOffset;
     [Space(15)]
+    [Tooltip("最后一个值是空白属正常现象")]
     public List<string> dialogueBox;
 
     private Object dialogueCase;
-    private object pressTips;
+    private GameObject pressTips;
     //对话框实例
     private GameObject dcInstance;
+    private bool isTalking;
+
+    private bool isCanTalk;
+    private int diaIndex;
 	// Use this for initialization
 	void Start () {
         GetComponent<PolygonCollider2D>().isTrigger = true;
 
         dialogueCase = Resources.Load("Prefabs/DialogueCase", typeof(GameObject));
 
-        pressTips = Resources.Load("Prefabs/DialogueCase",typeof(GameObject));
-	}
+        pressTips = GameObject.Find("pressTips");
+
+        pressTips.SetActive(false);
+
+        dialogueBox.Add(" ");
+        isTalking = false;
+        isCanTalk = false;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -33,18 +47,52 @@ public class SuperDialogue : MonoBehaviour {
             dcInstance.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(transform.position) + DialogueCaseOffset;
 
         }
+        //dui hua kai shi
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (isCanTalk)
+            {
+                pressTips.SetActive(false);
+                GameObject go = Instantiate(dialogueCase) as GameObject;
+                go.transform.SetParent(GameObject.Find("Canvas").transform, false);
+                dcInstance = go;
+                go.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(transform.position) + DialogueCaseOffset;
+                dcInstance.GetComponentInChildren<Text>().text = dialogueBox[diaIndex];
+                isCanTalk = false;
+                isTalking = true;
+            }
+            if (isTalking)
+            {
+                dcInstance.GetComponentInChildren<Text>().text = dialogueBox[diaIndex];
+                if (diaIndex < dialogueBox.Count -1)
+                {
+                    diaIndex++;
+                }
+                else if (diaIndex >= dialogueBox.Count -1)
+                {
+                    Destroy(dcInstance);
+                    diaIndex = 0;
+                    isCanTalk = false;
+                    isTalking = false;
+                }
 
+            }
+        }
     }
     private void OnTriggerEnter2D(Collider2D character)
     {
-        //tips
-
-        if (Input.GetKeyDown(KeyCode.E))
+        pressTips.SetActive(true);
+        isCanTalk = true;
+    }
+    private void OnTriggerExit2D(Collider2D charactre)
+    {
+        isCanTalk = false;
+        isTalking = false;
+        pressTips.SetActive(false);
+        if (dcInstance != null)
         {
-            GameObject go = Instantiate(dialogueCase) as GameObject;
-            go.transform.SetParent(GameObject.Find("Canvas").transform, false);
-            dcInstance = go;
-            go.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(transform.position) + DialogueCaseOffset;
+            Destroy(dcInstance);
         }
+        diaIndex = 0;
     }
 }
