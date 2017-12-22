@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Demo1/Soliloquize.unity
+- path: Assets/Demo2/conversion.unity
   isLoaded: 1
   isActive: 1

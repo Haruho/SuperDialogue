@@ -225,6 +225,7 @@
     <Compile Include="Assets\Demo1\CharacterMove.cs" />
     <Compile Include="Assets\Scripts\DialogueType.cs" />
     <Compile Include="Assets\Scripts\SuperDialogue.cs" />
+    <Compile Include="Assets\Scripts\TestClass.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

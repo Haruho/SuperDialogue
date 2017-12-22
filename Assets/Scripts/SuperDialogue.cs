@@ -50,35 +50,48 @@ public class SuperDialogue : MonoBehaviour {
         //dui hua kai shi
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (isCanTalk)
+            if (dialogueType == DialogueType.soliloquize)
             {
-                pressTips.SetActive(false);
-                GameObject go = Instantiate(dialogueCase) as GameObject;
-                go.transform.SetParent(GameObject.Find("Canvas").transform, false);
-                dcInstance = go;
-                go.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(transform.position) + DialogueCaseOffset;
-                dcInstance.GetComponentInChildren<Text>().text = dialogueBox[diaIndex];
-                isCanTalk = false;
-                isTalking = true;
+                SoliloquizeMode();
             }
-            if (isTalking)
+            else if (dialogueType == DialogueType.conversation)
             {
-                dcInstance.GetComponentInChildren<Text>().text = dialogueBox[diaIndex];
-                if (diaIndex < dialogueBox.Count -1)
-                {
-                    diaIndex++;
-                }
-                else if (diaIndex >= dialogueBox.Count -1)
-                {
-                    Destroy(dcInstance);
-                    diaIndex = 0;
-                    isCanTalk = false;
-                    isTalking = false;
-                }
 
             }
         }
     }
+     
+    private void SoliloquizeMode()
+    {
+        if (isCanTalk)
+        {
+            pressTips.SetActive(false);
+            GameObject go = Instantiate(dialogueCase) as GameObject;
+            go.transform.SetParent(GameObject.Find("Canvas").transform, false);
+            dcInstance = go;
+            go.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(transform.position) + DialogueCaseOffset;
+            dcInstance.GetComponentInChildren<Text>().text = dialogueBox[diaIndex];
+            isCanTalk = false;
+            isTalking = true;
+        }
+        if (isTalking)
+        {
+            dcInstance.GetComponentInChildren<Text>().text = dialogueBox[diaIndex];
+            if (diaIndex < dialogueBox.Count - 1)
+            {
+                diaIndex++;
+            }
+            else if (diaIndex >= dialogueBox.Count - 1)
+            {
+                Destroy(dcInstance);
+                diaIndex = 0;
+                isCanTalk = false;
+                isTalking = false;
+            }
+
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D character)
     {
         pressTips.SetActive(true);
